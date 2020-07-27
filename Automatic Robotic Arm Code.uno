@@ -9,46 +9,54 @@ void setup()
 {
 Serial.begin(9600); //serial communication between bluetooth and arduino
 myservo1.attach(3); //servo motor connected to the 3 pwm pin of the arduino
-myservo2.attach(5); 
-myservo3.attach(6); 
-myservo4.attach(9); 
-pinMode(2, OUTPUT); // connect to input 1 of l293d 
+myservo2.attach(5); //servo motor connected to the 5 pwm pin of the arduino
+myservo3.attach(6); //servo motor connected to the 6 pwm pin of the arduino
+myservo4.attach(9); //servo motor connected to the 9 pwm pin of the arduino
+pinMode(2, OUTPUT); // connect to input 1 of l293d (motor driver)
 pinMode(4, OUTPUT); // connect to input 4 of l293d 
 pinMode(7, OUTPUT); // connect to input 3 of l293d 
 pinMode(8, OUTPUT); // connect to input 2 of l293d 
-myservo1.write(90); 
+myservo1.write(90); //defining the initial position of servos 
 myservo2.write(115); 
 myservo3.write(0);  
 myservo4.write(90); 
 } 
-void loop() 
-if (Serial.available() >= 2 ) 
+void loop() //starting the main loop 
+if (Serial.available() >= 2 ) //checking whether there is an incoming data or not
 { 
 unsigned int servopos = Serial.read(); 
 unsigned int servopos1 = Serial.read(); 
 unsigned int datareceived = (servopos1 * 256) + servopos; 
-if (datareceived >= 1000 && datareceived < 1120) { 
+
+  //hear the data has been send in integers so each number represnts a motor & a signal 
+  
+if (datareceived >= 1000 && datareceived < 1120)//if the condition satisfices the first motor will be moved 
+{ 
 int servo1 = datareceived; 
-servo1 = map(servo1, 1080, 1100, 80, 100); 
-myservo1.write(servo1); 
-servop1=servo1; 
-delay(500); 
-myservo1.write(90); 
-} if (datareceived >= 2000 && datareceived < 2180) { 
+servo1 = map(servo1, 1080, 1100, 80, 100);//data wilbe maped to feed the servos  
+myservo1.write(servo1); //writing the current value 
+servop1=servo1; //servop1(stands is use to save the value)
+delay(500); //delaying for 500ms
+myservo1.write(90); //use in specaial cases (if you have brought a 360* servo motor variation )
+} 
+if (datareceived >= 2000 && datareceived < 2180)
+{ 
 int servo2 = datareceived; 
 servo2 = map(servo2, 2000, 2180, 0, 180); 
 myservo2.write(servo2); 
 servop2=servo2; 
 delay(10); 
 } 
-if (datareceived >= 3000 && datareceived < 3180) { 
+if (datareceived >= 3000 && datareceived < 3180)
+{ 
 int servo3 = datareceived; 
 servo3 = map(servo3, 3000, 3180, 0, 180); 
 myservo3.write(servo3); 
 servop3=servo3; 
 delay(10); 
 } 
-if (datareceived >= 4080 && datareceived < 4120) { 
+if (datareceived >= 4080 && datareceived < 4120)
+{ 
 int servo4 = datareceived; 
 servo4 = map(servo4, 4080, 4100, 80, 100); 
 myservo4.write(servo4); 
@@ -56,7 +64,8 @@ servop4=servo4;
 delay(500); 
 myservo4.write(90); 
 }
-if (datareceived >= 100 && datareceived < 110) { 
+if (datareceived >= 100 && datareceived < 110) 
+{ 
 int save = datareceived; 
 servos1[index] = servop1; // save position into the array 
 servos2[index] = servop2; 
@@ -64,7 +73,8 @@ servos3[index] = servop3;
 servos4[index] = servop4; 
 index++; 
 }  
-if (datareceived >= 400 && datareceived < 410) { 
+if (datareceived >= 400 && datareceived < 410) 
+{ 
 int reset = datareceived; 
 memset(servos1, 0, sizeof(servos1)); // Clear the array data to 0 
 memset(servos2, 0, sizeof(servos2)); 
